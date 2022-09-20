@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,400;0,700;1,400&family=Merriweather:wght@400;700&display=swap" rel="stylesheet"> 
+
+</head>
+<body>
+    
+    <main>
+    <div class="container">
+        <h1 class="title">Магический квадрат</h1>
+        <div class="lesson_part">
+            <br>
+            <input type="text" id="magText" placeholder="Введите текст"> <button onclick="magicalSquare()">Зашифровать</button>
+            <br>
+            <p>Ваш ключ</p> <input type="text" id="keys" placeholder="ключ">
+            <br>
+            <input type="text" id="result" placeholder="Результат">
+        </div>
+        
+        <h1 class="title">Расшифровка</h1>
+        <div class="lesson_part">
+            <br>
+            <input type="text" id="shText" placeholder="Введите текст"> <button onclick="shmagicalSquare()">Расшифровать</button>
+            <br>
+            <p>Ключи</p> <input type="text" id="shkeys" placeholder="Введите ключи">
+            <br>
+            <input type="text" id="shresult">
+        </div>
+    </div>
+    <div id="containerT">
+    <div id="containerTable">
+
+    </div>
+</div>
+   <script>
+       let magText = document.getElementById("magText");
+       let result = document.getElementById("result");
+       let keys = document.getElementById("keys");
+       let shmagText = document.getElementById("shText");
+       let shkeys = document.getElementById("shkeys");
+       let shresult = document.getElementById("shresult");
+       let contTable = document.getElementById("containerTable");
+       function magicalSquare(){
+            let textArr = Array.from(magText.value);
+            let countEl =Math.ceil(Math.sqrt(textArr.length));
+            let textArrDouble = [];
+            let magicalKeys = [];
+            let dict = {};
+            let resultField = document.getElementById("result");
+            for(let k = 0; k<Math.pow(countEl, 2); k++){
+                magicalKeys.push(k);
+                
+                    if(typeof textArr[k] === "undefined" || textArr[k] == ' '){
+                        textArr[k]=("-");
+                    }
+                    console.log(textArr[k]);
+            }
+
+            let shuffled = magicalKeys
+                .map(value => ({ value, sort: Math.random() }))
+                .sort((a, b) => a.sort - b.sort)
+                .map(({ value }) => value)
+            
+            console.log(shuffled)
+            //console.log(magicalKeys);   
+            
+            
+            let resultArr = [];
+            let j =0;
+            shuffled.forEach(key => {
+                dict[key] = textArr[j];
+                j++;
+            });
+            //console.log(resultArr);
+            console.log(dict);
+            let sorted = [];
+            // for(var key in dict) {
+            //     sorted[sorted.length] = key;
+            // }
+            // sorted.sort();
+
+            let tempDict = [];
+            for(var i = 0; i < shuffled.length; i++) {
+                tempDict.push(dict[i]);
+            }
+            //console.log(tempDict);
+            keys.value = shuffled.join('#');   
+            result.value = tempDict.join('#');
+            let textDoud0 = [];
+            let textDoud1 = [];
+            let textDoud2 = [];
+            for(var o = 0; o < countEl; o++){
+                let textArr1 = [];
+                for(let h = 0; h < countEl; h++){
+                    textArr1.push(textArr[h + o*countEl]);
+                }
+                    //console.log(textArr1)
+                
+                textDoud0.push(textArr1);
+            }
+            for(var o = 0; o < countEl; o++){
+                    let textArr1 = [];
+                    for(let h = 0; h < countEl; h++){
+                        textArr1.push(shuffled[h + o*countEl]);
+                    }
+                        //console.log(textArr1)
+                    
+                    textDoud1.push(textArr1);
+                }
+            for(var o = 0; o < countEl; o++){
+                let textArr1 = [];
+                for(let h = 0; h < countEl; h++){
+                    textArr1.push(tempDict[h + o*countEl]);
+                }
+                    //console.log(textArr1)
+                
+                textDoud2.push(textArr1);
+            }
+                //console.log(textDoud1);
+                //console.log(textDoud2);
+                contTable.innerHTML = '';
+                contTable.appendChild(createTable(textDoud0));
+                contTable.appendChild(createTable(textDoud1));
+                contTable.appendChild(createTable(textDoud2));
+
+
+       }
+       function shmagicalSquare(){
+            let shtextArr = shmagText.value.split('#');
+            let shkeysArr = shkeys.value.split('#');
+            let shresultArr = [];
+            
+            for(let i = 0; i< shtextArr.length; i++){
+                shresultArr.push(i);
+
+            }
+            let rowArr = [];
+            shkeysArr.forEach(function(el){
+                rowArr.push(shtextArr[el]);         
+            });
+            //console.log(rowArr);
+            let tempW = "";
+            rowArr.forEach(letter => {
+                tempW = tempW + letter;
+            });
+            shresult.value = tempW;
+        }     
+    function createTable(textArrDouble){
+        let table = document.createElement('table');
+                let tableBody = document.createElement('tbody');
+                //tableHolder.innerHTML = '';
+                textArrDouble.forEach(function(rowArr){
+                    let row = document.createElement('tr');
+                    rowArr.forEach(function(cellEl){
+                        let cell = document.createElement('td');
+                        cell.innerText = cellEl;
+                        row.appendChild(cell);
+                    })
+                    tableBody.appendChild(row);
+                })
+                table.appendChild(tableBody);
+                return table;
+    }
+
+   </script>
+    <style>
+        table{
+            margin: 10px;
+        }
+        table td{
+            text-align: center;
+            width: 2rem;
+            border: 1px solid black;
+            font-size: 2rem;
+        }
+        main{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            width: 100vw;
+        }
+        #containerTable{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+        .container{
+            width: 30vw;            
+
+        }
+        #containerT{
+            display: flex;
+            justify-content: center;
+            width: 30vw;
+        }
+
+    </style>
+
+</body>
+</html>
